@@ -46,13 +46,13 @@ pipeline {
             }
         }
 
-        // Optional: Uncomment to destroy infra after testing
-        // stage('Terraform Destroy') {
-        //     steps {
-        //         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'awscredentials']]) {
-        //             sh 'terraform destroy -auto-approve'
-        //         }
-        //     }
-        // }
+         Optional: Uncomment to destroy infra after testing
+        stage('Terraform Destroy') {
+             steps {
+                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'awscredentials']]) {
+                     sh 'terraform destroy -auto-approve'
+                 }
+             }
+         }
     }
 }
