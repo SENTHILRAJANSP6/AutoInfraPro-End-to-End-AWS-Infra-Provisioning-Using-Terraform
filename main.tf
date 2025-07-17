@@ -7,6 +7,6 @@ resource "aws_instance" "prod_server" {
   ami = "ami-0a1235697f4afa8a4"
 
   tags = {
-    name = "pro"
+    name = "product_dev"
   }
 }
