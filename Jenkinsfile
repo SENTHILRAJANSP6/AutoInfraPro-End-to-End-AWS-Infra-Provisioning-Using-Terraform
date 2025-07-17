@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_DEFAULT_REGION = 'ap-south-1'
         TF_IN_AUTOMATION   = 'true'
     }
@@ -17,11 +15,10 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
 
-   
     stages {
         stage('Terraform Init') {
             steps {
-                 withCredentials([
+                withCredentials([
                     string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
                 ]) {
@@ -30,10 +27,9 @@ pipeline {
                         export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                         terraform init
                     '''
+                }
             }
         }
-
-    
 
         stage('Terraform Validate') {
             steps {
@@ -43,26 +39,48 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan -out=tfplan.out'
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                        export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                        terraform plan -out=tfplan.out
+                    '''
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                sh 'terraform apply -auto-approve tfplan.out'
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                        export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                        terraform apply -auto-approve tfplan.out
+                    '''
+                }
             }
         }
 
-        // Optional: Use only for testing
+        // Uncomment this stage if you want to enable destroy after testing
         // stage('Terraform Destroy') {
         //     steps {
-        //         sh 'terraform destroy -auto-approve'
+        //         withCredentials([
+        //             string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+        //             string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+        //         ]) {
+        //             sh '''
+        //                 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+        //                 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+        //                 terraform destroy -auto-approve
+        //             '''
+        //         }
         //     }
         // }
     }
 }
-
-}
-
-
-
