@@ -15,12 +15,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
 
-    stages {
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/SENTHILRAJANSP6/AutoInfraPro-End-to-End-AWS-Infra-Provisioning-Using-Terraform.git'
-            }
-        }
+   
 
         stage('Terraform Init') {
             steps {
