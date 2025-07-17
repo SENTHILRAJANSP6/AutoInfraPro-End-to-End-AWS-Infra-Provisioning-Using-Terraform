@@ -18,6 +18,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
+                git branch: 'main',
                 git url: 'https://github.com/SENTHILRAJANSP6/AutoInfraPro-End-to-End-AWS-Infra-Provisioning-Using-Terraform.git'
             }
         }
@@ -50,42 +51,6 @@ pipeline {
             steps {
                 sh 'terraform destroy -auto-approve'
             }
-        }
-    }
-
-    post {
-        success {
-            mail to: 'senthilrajansp@gmail.com',
-                 subject: "✅ Jenkins Build #${env.BUILD_NUMBER} Succeeded: ${env.JOB_NAME}",
-                 body: """Hi Senthil,
-
-The Jenkins pipeline **${env.JOB_NAME}** has completed **SUCCESSFULLY**.
-
-Build Details:
-- Build Number: ${env.BUILD_NUMBER}
-- GitHub Repo: https://github.com/SENTHILRAJANSP6/AutoInfraPro-End-to-End-AWS-Infra-Provisioning-Using-Terraform.git
-- Jenkins Job: ${env.BUILD_URL}
-
-Regards,
-Jenkins CI/CD Bot"""
-        }
-
-        failure {
-            mail to: 'senthilrajansp@gmail.com',
-                 subject: "❌ Jenkins Build #${env.BUILD_NUMBER} Failed: ${env.JOB_NAME}",
-                 body: """Hi Senthil,
-
-The Jenkins pipeline **${env.JOB_NAME}** has **FAILED**.
-
-Build Details:
-- Build Number: ${env.BUILD_NUMBER}
-- GitHub Repo: https://github.com/SENTHILRAJANSP6/AutoInfraPro-End-to-End-AWS-Infra-Provisioning-Using-Terraform.git
-- Jenkins Job: ${env.BUILD_URL}
-
-Please check the logs for more details.
-
-Regards,
-Jenkins CI/CD Bot"""
         }
     }
 }
