@@ -2,24 +2,23 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'ap-south-1'      // Update to your region
+        AWS_DEFAULT_REGION = 'ap-south-1'
         TF_IN_AUTOMATION   = 'true'
     }
 
     triggers {
-        githubPush()  // Trigger pipeline on git push
+        githubPush() // Trigger pipeline on GitHub push
     }
 
     options {
-        timestamps()       // Add timestamps to logs
-        buildDiscarder(logRotator(numToKeepStr: '5')) // Keep only last 5 builds
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '5'))
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'main',
-                git url: 'https://github.com/SENTHILRAJANSP6/AutoInfraPro-End-to-End-AWS-Infra-Provisioning-Using-Terraform.git'
+                git branch: 'main', url: 'https://github.com/SENTHILRAJANSP6/AutoInfraPro-End-to-End-AWS-Infra-Provisioning-Using-Terraform.git'
             }
         }
 
@@ -47,10 +46,12 @@ pipeline {
             }
         }
 
-        stage('Terraform Destroy') {
-            steps {
-                sh 'terraform destroy -auto-approve'
-            }
-        }
+        // Optional: Use only for testing
+        // stage('Terraform Destroy') {
+        //     steps {
+        //         sh 'terraform destroy -auto-approve'
+        //     }
+        // }
     }
+
 }
