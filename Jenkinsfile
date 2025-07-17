@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-         Optional: Uncomment to destroy infra after testing
+        // Optional: Uncomment to destroy infra after testing
         stage('Terraform Destroy') {
              steps {
                  withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'awscredentials']]) {
