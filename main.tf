@@ -1,9 +1,12 @@
-module "ec2" {
-  source        = "./modules/ec2_instance"
-  instance_name = var.instance_name
-  #key_name         = var.key_name
-  aws_region         = var.aws_region
-  vpc_cidr           = var.vpc_cidr
-  public_subnet_cidr = var.public_subnet_cidr
+provider "aws" {
+  region = "ap-south-1"
 }
 
+resource "aws_instance" "prod_server" {
+  instance_type = "t2.micro"
+  ami = ami-0a1235697f4afa8a4
+
+  tags = {
+    name "pro"
+  }
+}
